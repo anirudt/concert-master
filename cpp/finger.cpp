@@ -2,28 +2,45 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+using namespace std;
+using namespace cv;
 
 int main()
 {
-  cv::VideoCapture cap(0);
+  VideoCapture cap(0);
   const char* windowName = "Fingertip detection";
-  int minH = 130, maxH = 160, minS = 10, maxS = 40, minV = 75, maxV = 130;
-  cv::namedWindow(windowName);
-  cv::createTrackbar("MinH", windowName, &minH, 180);
-  cv::createTrackbar("MaxH", windowName, &maxH, 180);
-  cv::createTrackbar("MinS", windowName, &minS, 255);
-  cv::createTrackbar("MaxS", windowName, &maxS, 255);
-  cv::createTrackbar("MinV", windowName, &minV, 255);
-  cv::createTrackbar("MaxV", windowName, &maxV, 255);
+  
+  // Decided after tuning.
+  int minH = 0, maxH = 14, minS = 66, maxS = 154, minV = 110, maxV = 238;
+
+  int erosion_size = 21, dil_size = 10;
+  int max_elem = 2;
+
+  // Trackbar for erosion, dilation.
+  namedWindow(windowName);
+  createTrackbar( "Erosion Size", windowName,
+                        &erosion_size, 21);
+  createTrackbar( "Dilation Size", windowName,
+                        &dil_size, 21);
   while (1)
   {
-      cv::Mat frame;
+      Mat frame;
+
+      // Capture the camera input
       cap >> frame;
-      cv::Mat hsv;
-      cv::cvtColor(frame, hsv, CV_BGR2HSV);
-      cv::inRange(hsv, cv::Scalar(minH, minS, minV), cv::Scalar(maxH, maxS, maxV), hsv);
-      cv::imshow(windowName, hsv);
-      if (cv::waitKey(30) >= 0) break;
+      Mat hsv;
+      cvtColor(frame, hsv, CV_BGR2HSV);
+      inRange(hsv, Scalar(minH, minS, minV), Scalar(maxH, maxS, maxV), hsv);
+
+      Mat erode_element, dil_element;
+      erode_element = getStructuringElement(MORPH_RECT, Size(2*erosion_size+1, 2*erosion_size+1),
+                  Point(erosion_size, erosion_size));
+      dil_element = getStructuringElement(MORPH_RECT, Size(2*dil_size+1, 2*dil_size+1),
+                  Point(dil_size, dil_size));
+      erode(hsv, hsv, erode_element);
+      dilate(hsv, hsv, dil_element);
+      imshow(windowName, hsv);
+      if (waitKey(30) >= 0) break;
   }
   return 0;
 }
