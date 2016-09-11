@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( finger )
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( finger finger.cpp )
+target_link_libraries( finger ${OpenCV_LIBS} )
