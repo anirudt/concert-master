@@ -11,7 +11,8 @@ int main()
   const char* windowName = "Fingertip detection";
   
   // Decided after tuning.
-  int minH = 0, maxH = 14, minS = 66, maxS = 154, minV = 110, maxV = 238;
+  //int minH = 0, maxH = 14, minS = 66, maxS = 154, minV = 110, maxV = 238;
+  int minH = 0, maxH = 20, minS = 30, maxS = 150, minV = 60, maxV = 255;
 
   int erosion_size = 21, dil_size = 10;
   int max_elem = 2;
@@ -42,8 +43,21 @@ int main()
                   Point(dil_size, dil_size));
       medianBlur(hsv, hsv, median_size*2+1);
       dilate(hsv, hsv, dil_element);
-      //erode(hsv, hsv, erode_element);
-      imshow(windowName, hsv);
+
+      // Contour Detection
+      vector<vector<Point> > contours;
+      vector<Vec4i> hierarchy;
+      findContours(hsv, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+      size_t largestContour = 0;
+      for (size_t i = 1; i < contours.size(); i++)
+      {
+        if (contourArea(contours[i]) > contourArea(contours[largestContour]))
+          largestContour = i;
+
+      }
+      drawContours(frame, contours, largestContour, Scalar(0, 0, 255), 1);
+      imshow(windowName, frame);
+
       if (waitKey(30) >= 0) break;
   }
   return 0;
