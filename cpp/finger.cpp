@@ -15,6 +15,7 @@ int main()
 
   int erosion_size = 21, dil_size = 10;
   int max_elem = 2;
+  int median_size = 21;
 
   // Trackbar for erosion, dilation.
   namedWindow(windowName);
@@ -22,6 +23,8 @@ int main()
                         &erosion_size, 21);
   createTrackbar( "Dilation Size", windowName,
                         &dil_size, 21);
+  createTrackbar( "Median blue kernel size", windowName,
+                        &median_size, 10);
   while (1)
   {
       Mat frame;
@@ -37,8 +40,9 @@ int main()
                   Point(erosion_size, erosion_size));
       dil_element = getStructuringElement(MORPH_RECT, Size(2*dil_size+1, 2*dil_size+1),
                   Point(dil_size, dil_size));
-      erode(hsv, hsv, erode_element);
+      medianBlur(hsv, hsv, median_size*2+1);
       dilate(hsv, hsv, dil_element);
+      //erode(hsv, hsv, erode_element);
       imshow(windowName, hsv);
       if (waitKey(30) >= 0) break;
   }
