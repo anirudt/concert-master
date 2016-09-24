@@ -21,7 +21,11 @@ def play_music(music_file):
         # check if playback has finished
         clock.tick(30)
 
-notes1 = NoteSeq("D4 F#8 A Bb4")
+note = "D4 E#8 F#8 Gg4 A Bb4 "
+notes = ""
+for i in xrange(10):
+    notes += note
+notes1 = NoteSeq(notes)
 midi = Midi(1, tempo=90)
 midi.seq_notes(notes1, track=0)
 midi.write("demo.mid")

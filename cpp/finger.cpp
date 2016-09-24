@@ -39,8 +39,8 @@ int main()
       inRange(hsv, Scalar(minH, minS, minV), Scalar(maxH, maxS, maxV), hsv);
 
       Mat erode_element, dil_element;
-      erode_element = getStructuringElement(MORPH_RECT, Size(2*erosion_size+1, 2*erosion_size+1),
-                  Point(erosion_size, erosion_size));
+      //erode_element = getStructuringElement(MORPH_RECT, Size(2*erosion_size+1, 2*erosion_size+1),
+      //            Point(erosion_size, erosion_size));
       dil_element = getStructuringElement(MORPH_RECT, Size(2*dil_size+1, 2*dil_size+1),
                   Point(dil_size, dil_size));
       medianBlur(hsv, hsv, median_size*2+1);
