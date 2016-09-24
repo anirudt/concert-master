@@ -28,18 +28,22 @@ def webCamCapture():
 
         cv2.waitKey(50)
         contours, hierarchy = cv2.findContours(hsv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        largestContour = 0
 
         # TODO: Logic here for both the hands
+        # Generate their areas first.
+        secLarge, largestContour = 0, 0
         for i in range(len(contours)):
             if (cv2.contourArea(contours[i]) > cv2.contourArea(contours[largestContour])):
+                secLarge = largestContour
                 largestContour = i
+
         print largestContour, len(contours)
         M = cv2.moments(contours[largestContour])
         cx = int(M['m10']/M['m00'])
         cy = int(M['m01']/M['m00'])
         print cx, cy
         cv2.drawContours(frame, contours, largestContour, (0, 0, 255), 1);
+        cv2.drawContours(frame, contours, secLarge, (0, 255, 0), 1);
         cv2.imshow(windowName, frame);
         cv2.waitKey(25)
 

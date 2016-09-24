@@ -8,7 +8,6 @@ $ python concert.py
 ```
 
 ## TODO:
-- Keep trackbars for each of them for more robust fingertip detection.
 
 ## Preprocessing involved
 The following preprocessing is conducted:
@@ -16,3 +15,4 @@ The following preprocessing is conducted:
 - Apply a range thresholding
 - Apply Dilation / Erosion.
 - Apply Medianblur to remove small outlier white points.
+- Apply contouring to get the contours with the largest areas.
