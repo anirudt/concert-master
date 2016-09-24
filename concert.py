@@ -14,6 +14,8 @@ def webCamCapture():
     centroids = []
     print "Let us start now!"
     time.sleep(5)
+    print "Projecting for next 10 seconds."
+    start = time.time()
     while True:
         # Capture the frames one by one
         ret, frame = cap.read()
@@ -60,6 +62,8 @@ def webCamCapture():
         cv2.drawContours(frame, contours, largestContour, (0, 0, 255), 1);
         cv2.drawContours(frame, contours, secLarge, (0, 255, 0), 1);
         cv2.imshow(windowName, frame);
+        if time.time() > start + 10:
+            break
         cv2.waitKey(25)
 
     cap.release()

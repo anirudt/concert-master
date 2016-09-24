@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from pyknon.genmidi import Midi
 from pyknon.music import NoteSeq, Note
+import pdb
 
 import pygame
 
@@ -35,7 +36,9 @@ def proc(centroid_list):
     for i in range(num_notes):
         a, b = getSingleObj(centroid_list[i], centroid_list[i+1],\
                 centroid_list[i+2], centroid_list[i+3])
-        notes = [notes, a, b]
+        notes.append(a)
+        notes.append(b)
+    pdb.set_trace()
     sequence = NoteSeq(notes)
     midi = Midi(i, tempo=90, instrument=0)
     midi.seq_notes(sequence, track=0)
@@ -56,4 +59,5 @@ def main():
     play_music("demo.mid")
 
 if __name__ == '__main__':
+    play_music("temp.mid")
     main()
