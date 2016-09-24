@@ -7,8 +7,10 @@ import pygame
 
 def getSingleObj(fx, fy, gx, gy):
     """ Get 2 note objects and keep writing them. """
-    a = Note(int(fx/60), int(fy/48))
-    b = Note(int(gx/60), int(fy/48))
+    """ X direction indicates pitches. """
+    """ Y direction indicates octaves. """
+    a = Note(int(fx/53), int(fy/48))
+    b = Note(int(gx/53), int(fy/48))
     return a, b
 
 # TODO: Add function to generate note str from number moduloed.

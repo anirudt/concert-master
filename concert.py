@@ -4,6 +4,20 @@ import pdb
 import cv2
 import musicgen
 
+colors = [(255, 255, 255), (219, 10, 91), (207, 0, 15), (210, 82, 127), (154, 18, 179), (31, 58, 147), (22, 160, 133), (247, 202, 24), (249, 105, 14), (149, 165, 166), (103, 65, 114), (255, 255, 255)]
+
+def generateWallpaper(shape):
+    namedWindow = "Wallpaper"
+    white = np.ones(shape, dtype=np.uint8) * 255
+    x,y,h,k = 0,0,53,48
+    for i in xrange(12):
+        for j in xrange(10):
+            cv2.rectangle(white, (x+i*53, y+j*48), (h+i*53, k+j*48), tuple([0.1*j*comp for comp in colors[i]]), -1)
+    cv2.namedWindow(namedWindow, 0)
+    cv2.imshow(namedWindow, white)
+    cv2.imwrite("wallpaper.png", white)
+    cv2.waitKey(0)
+
 def webCamCapture():
     cap = cv2.VideoCapture(0)
     windowName = "Concert"
@@ -16,9 +30,13 @@ def webCamCapture():
     time.sleep(5)
     print "Projecting for next 10 seconds."
     start = time.time()
+    itx = 0
     while True:
         # Capture the frames one by one
         ret, frame = cap.read()
+        if itx == 0: 
+            wallpaper = generateWallpaper(frame.shape)
+            itx = 1
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         hsv = cv2.inRange(hsv, np.array([minH, minS, minV]), np.array([maxH, maxS, maxV]))
