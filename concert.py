@@ -13,10 +13,11 @@ def generateWallpaper(shape):
     for i in xrange(12):
         for j in xrange(10):
             cv2.rectangle(white, (x+i*53, y+j*48), (h+i*53, k+j*48), tuple([0.1*j*comp for comp in colors[i]]), -1)
-    cv2.namedWindow(namedWindow, 0)
-    cv2.imshow(namedWindow, white)
-    cv2.imwrite("wallpaper.png", white)
-    cv2.waitKey(0)
+    #cv2.namedWindow(namedWindow, 0)
+    #cv2.imshow(namedWindow, white)
+    #cv2.imwrite("wallpaper.png", white)
+    #cv2.waitKey(0)
+    return white
 
 def webCamCapture():
     cap = cv2.VideoCapture(0)
@@ -31,6 +32,7 @@ def webCamCapture():
     print "Projecting for next 10 seconds."
     start = time.time()
     itx = 0
+    red_val = 0
     while True:
         # Capture the frames one by one
         ret, frame = cap.read()
@@ -62,6 +64,9 @@ def webCamCapture():
                 secLarge = largestContour
                 largestContour = i
 
+        if len(contours) == 0:
+            continue
+
         first = cv2.moments(contours[largestContour])
         second = cv2.moments(contours[secLarge])
 
@@ -77,11 +82,15 @@ def webCamCapture():
         centroids.append(second_cx)
         centroids.append(second_cy)
 
-        cv2.drawContours(frame, contours, largestContour, (0, 0, 255), 1);
-        cv2.drawContours(frame, contours, secLarge, (0, 255, 0), 1);
-        cv2.imshow(windowName, frame);
-        if time.time() > start + 10:
+        new_wp = wallpaper
+        #cv2.drawContours(new_wp, contours, largestContour, (0, 0, 255), 1)
+        #cv2.drawContours(new_wp, contours, secLarge, (0, 255, 0), 1)
+        cv2.circle(new_wp, (first_cx, first_cy), 5, (0, 0, red_val), -1)
+        cv2.circle(new_wp, (second_cx, second_cy), 5, (0, 0, red_val), -1)
+        cv2.imshow(windowName, new_wp)
+        if time.time() > start + 25:
             break
+        red_val += 0.5
         cv2.waitKey(25)
 
     cap.release()
@@ -91,5 +100,7 @@ def webCamCapture():
     print "Done with writing music files."
 
 if __name__ == '__main__':
+    time.sleep(3)
     webCamCapture()
+    #generateWallpaper((480, 640, 3))
 

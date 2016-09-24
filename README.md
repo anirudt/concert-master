@@ -8,6 +8,8 @@ $ python concert.py
 ```
 
 ## TODO:
+- Duplicate the code for a single and a double hand system.
+- Optparse coming soon.
 
 ## Preprocessing involved
 The following preprocessing is conducted:
@@ -16,3 +18,4 @@ The following preprocessing is conducted:
 - Apply Dilation / Erosion.
 - Apply Medianblur to remove small outlier white points.
 - Apply contouring to get the contours with the largest areas.
+- Done with music synthesis for a double hand system.

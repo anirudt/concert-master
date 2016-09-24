@@ -62,4 +62,4 @@ def main():
 
 if __name__ == '__main__':
     play_music("temp.mid")
-    main()
+    #main()
