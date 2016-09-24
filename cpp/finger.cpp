@@ -11,21 +11,23 @@ int main()
   const char* windowName = "Fingertip detection";
   
   // Decided after tuning.
-  //int minH = 0, maxH = 14, minS = 66, maxS = 154, minV = 110, maxV = 238;
-  int minH = 0, maxH = 20, minS = 30, maxS = 150, minV = 60, maxV = 255;
+  int minH = 0, maxH = 14, minS = 66, maxS = 154, minV = 110, maxV = 238;
+  //int minH = 0, maxH = 20, minS = 30, maxS = 150, minV = 60, maxV = 255;
 
-  int erosion_size = 21, dil_size = 10;
-  int max_elem = 2;
-  int median_size = 21;
+  int erosion_size = 5, dil_size = 4;
+  int max_elem = 4;
+  int median_size = 4;
 
   // Trackbar for erosion, dilation.
   namedWindow(windowName);
+  /*
   createTrackbar( "Erosion Size", windowName,
                         &erosion_size, 21);
   createTrackbar( "Dilation Size", windowName,
                         &dil_size, 21);
   createTrackbar( "Median blue kernel size", windowName,
                         &median_size, 10);
+  */
   while (1)
   {
       Mat frame;
@@ -44,6 +46,7 @@ int main()
       medianBlur(hsv, hsv, median_size*2+1);
       dilate(hsv, hsv, dil_element);
 
+      Mat bin(hsv);
       // Contour Detection
       vector<vector<Point> > contours;
       vector<Vec4i> hierarchy;
