@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from pyknon.genmidi import Midi
 from pyknon.music import NoteSeq, Note
+import os
 import pdb
 
 import pygame
@@ -9,8 +10,8 @@ def getSingleObj(fx, fy, gx, gy):
     """ Get 2 note objects and keep writing them. """
     """ X direction indicates pitches. """
     """ Y direction indicates octaves. """
-    a = Note(int(fx/53), int(fy/48))
-    b = Note(int(gx/53), int(fy/48))
+    a = Note(value=int(fx/53), volume=int(fy/48)*12)
+    b = Note(value=int(gx/53), volume=int(fy/48)*12)
     return a, b
 
 # TODO: Add function to generate note str from number moduloed.
@@ -32,22 +33,24 @@ def play_music(music_file):
         # check if playback has finished
         clock.tick(30)
 
-def proc(centroid_list):
+def proc(centroid_list, num):
     num_notes = len(centroid_list)/4
     notes = []
     for i in range(num_notes):
-        a, b = getSingleObj(centroid_list[i], centroid_list[i+1],\
+        if num == 2:
+            a, b = getSingleObj(centroid_list[i], centroid_list[i+1],\
                 centroid_list[i+2], centroid_list[i+3])
-        notes.append(a)
-        notes.append(b)
+            notes.append(a)
+            notes.append(b)
+        elif num == 1:
+            a, b = getSingleObj(centroid_list[i], centroid_list[i+1], 0, 0)
+            notes.append(a)
     pdb.set_trace()
     sequence = NoteSeq(notes)
     midi = Midi(i, tempo=90, instrument=0)
     midi.seq_notes(sequence, track=0)
     midi.write("temp.mid")
     play_music("temp.mid")
-
-        
 
 def main():
     note = "D4 E#10 F#8 Gg4 A Bb4 "

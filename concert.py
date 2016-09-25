@@ -3,8 +3,12 @@ import time
 import pdb
 import cv2
 import musicgen
+from optparse import OptionParser
 
 colors = [(255, 255, 255), (219, 10, 91), (207, 0, 15), (210, 82, 127), (154, 18, 179), (31, 58, 147), (22, 160, 133), (247, 202, 24), (249, 105, 14), (149, 165, 166), (103, 65, 114), (255, 255, 255)]
+
+parser = OptionParser()
+parser.add_option("-n", "--num", dest="num", type="int", default=2)
 
 def generateWallpaper(shape):
     namedWindow = "Wallpaper"
@@ -33,9 +37,12 @@ def webCamCapture():
     start = time.time()
     itx = 0
     red_val = 0
+    (opts, args) = parser.parse_args()
+
     while True:
         # Capture the frames one by one
         ret, frame = cap.read()
+        X = max(frame.shape) 
         if itx == 0: 
             wallpaper = generateWallpaper(frame.shape)
             itx = 1
@@ -67,27 +74,41 @@ def webCamCapture():
         if len(contours) == 0:
             continue
 
-        first = cv2.moments(contours[largestContour])
-        second = cv2.moments(contours[secLarge])
+        if opts.num == 1:
+            print "One hand", red_val
+            first = cv2.moments(contours[largestContour])
+            first_cx = int(first['m10']/first['m00'])
+            first_cy = int(first['m01']/first['m00'])
+            centroids.append(first_cx)
+            centroids.append(first_cy)
+            new_wp = wallpaper
 
-        first_cx = int(first['m10']/first['m00'])
-        first_cy = int(first['m01']/first['m00'])
-        second_cx = int(second['m10']/second['m00'])
-        second_cy = int(second['m01']/second['m00'])
+            cv2.circle(new_wp, (X-first_cx, first_cy), 5, (0, 0, red_val), -1)
+            cv2.imshow(windowName, new_wp)
 
-        print first_cx, first_cy
-        print second_cx, second_cy
-        centroids.append(first_cx)
-        centroids.append(first_cy)
-        centroids.append(second_cx)
-        centroids.append(second_cy)
+        if opts.num == 2:
+            print "Two hands"
+            first = cv2.moments(contours[largestContour])
+            second = cv2.moments(contours[secLarge])
 
-        new_wp = wallpaper
-        #cv2.drawContours(new_wp, contours, largestContour, (0, 0, 255), 1)
-        #cv2.drawContours(new_wp, contours, secLarge, (0, 255, 0), 1)
-        cv2.circle(new_wp, (first_cx, first_cy), 5, (0, 0, red_val), -1)
-        cv2.circle(new_wp, (second_cx, second_cy), 5, (0, 0, red_val), -1)
-        cv2.imshow(windowName, new_wp)
+            first_cx = int(first['m10']/first['m00'])
+            first_cy = int(first['m01']/first['m00'])
+            second_cx = int(second['m10']/second['m00'])
+            second_cy = int(second['m01']/second['m00'])
+
+            print first_cx, first_cy
+            print second_cx, second_cy
+            centroids.append(first_cx)
+            centroids.append(first_cy)
+            centroids.append(second_cx)
+            centroids.append(second_cy)
+
+            new_wp = wallpaper
+            cv2.circle(new_wp, (X-first_cx, first_cy), 5, (0, 0, red_val), -1)
+            cv2.circle(new_wp, (X-second_cx, second_cy), 5, (0, 0, red_val), -1)
+            cv2.imshow(windowName, new_wp)
+        else:
+            print "Never here.", red_val, opts.num
         if time.time() > start + 25:
             break
         red_val += 0.5
@@ -96,11 +117,10 @@ def webCamCapture():
     cap.release()
     cv2.destroyAllWindows()
 
-    musicgen.proc(centroids)
+    musicgen.proc(centroids, opts.num)
     print "Done with writing music files."
 
 if __name__ == '__main__':
     time.sleep(3)
     webCamCapture()
-    #generateWallpaper((480, 640, 3))
 
