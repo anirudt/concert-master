@@ -1,6 +1,10 @@
 ## What?
 Concert-Master is a gesture based music synthesis tool.
 
+## Dependencies
+- ```opencv```
+- ```pyknon```
+
 ## Build Instructions
 Fire up a terminal and run the above command.
 ```
