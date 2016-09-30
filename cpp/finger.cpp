@@ -36,6 +36,7 @@ int main()
       cap >> frame;
       Mat hsv;
       cvtColor(frame, hsv, CV_BGR2HSV);
+      cout << (int) hsv.at<Vec3b>(hsv.rows/2, hsv.cols/2)[0] << " " << (int) hsv.at<Vec3b>(hsv.rows/2, hsv.cols/2)[1] << " " << (int) hsv.at<Vec3b>(hsv.rows/2, hsv.cols/2)[2] << endl;
       inRange(hsv, Scalar(minH, minS, minV), Scalar(maxH, maxS, maxV), hsv);
 
       Mat erode_element, dil_element;

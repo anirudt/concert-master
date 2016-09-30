@@ -12,8 +12,7 @@ $ python concert.py
 ```
 
 ## TODO:
-- Duplicate the code for a single and a double hand system.
-- Optparse coming soon.
+- Archive the scatterplot and the MIDI file later.
 
 ## Preprocessing involved
 The following preprocessing is conducted:

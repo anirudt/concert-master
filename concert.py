@@ -5,6 +5,7 @@ import cv2
 import musicgen
 from optparse import OptionParser
 
+# List of nice colors for the music-mapper
 colors = [(255, 255, 255), (219, 10, 91), (207, 0, 15), (210, 82, 127), (154, 18, 179), (31, 58, 147), (22, 160, 133), (247, 202, 24), (249, 105, 14), (149, 165, 166), (103, 65, 114), (255, 255, 255)]
 
 parser = OptionParser()
@@ -23,6 +24,16 @@ def generateWallpaper(shape):
     #cv2.waitKey(0)
     return white
 
+def drawRectangles(img):
+    rows = img.shape[0]
+    cols = img.shape[1]
+    # Mark 8 rectangles.
+
+    # TODO: Develop the math and draw the rectangles.
+
+    # Return in the form of (rows, cols, 8).
+
+
 def webCamCapture():
     cap = cv2.VideoCapture(0)
     windowName = "Concert"
@@ -38,6 +49,16 @@ def webCamCapture():
     itx = 0
     red_val = 0
     (opts, args) = parser.parse_args()
+
+    # TODO: Make a system here to capture hand color and decide the boundaries for H, S, V for thresholding.
+    for i in xrange(10):
+        ret, frame = cap.read()
+        rects = drawRectangles(frame)
+        time.sleep(0.1)
+
+        # TODO: Flatten/Ravel each rects[:,:,i] and append them to a vector.
+
+        # TODO: Using the median, mean, decide the threshold. Probably have a trackbar to decide this too.
 
     while True:
         # Capture the frames one by one
@@ -116,6 +137,7 @@ def webCamCapture():
 
     cap.release()
     cv2.destroyAllWindows()
+    cv2.imwrite("scatter.png", new_wp)
 
     musicgen.proc(centroids, opts.num)
     print "Done with writing music files."
