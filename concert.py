@@ -27,11 +27,12 @@ def generateWallpaper(shape):
 def drawRectangles(img):
     rows = img.shape[0]
     cols = img.shape[1]
+    i, j = cols/2, rows/2
     # Mark 8 rectangles.
-
-    # TODO: Develop the math and draw the rectangles.
+    cv2.rectangle(img, (i-50,j-100), (i+50, j+100), (255, 255, 0), 1)
 
     # Return in the form of (rows, cols, 8).
+    return img, None
 
 
 def webCamCapture():
@@ -51,15 +52,25 @@ def webCamCapture():
     (opts, args) = parser.parse_args()
 
     # TODO: Make a system here to capture hand color and decide the boundaries for H, S, V for thresholding.
-    for i in xrange(10):
+    start = time.time()
+    roi_h = roi_s = roi_v = np.array([])
+    while True:
         ret, frame = cap.read()
-        rects = drawRectangles(frame)
-        time.sleep(0.1)
-
-        # TODO: Flatten/Ravel each rects[:,:,i] and append them to a vector.
+        frame, rects = drawRectangles(frame)
+        rows = frame.shape[0]
+        cols = frame.shape[1]
+        cv2.imshow("initing", frame)
+        cv2.waitKey(25)
+        if (time.time()-start > 8):
+            roi = frame[rows/2-50:rows/2+50, cols/2-100:cols/2+100]
+            roi_h = roi[:,:,0]
+            roi_s = roi[:,:,1]
+            roi_v = roi[:,:,2]
+            break
 
         # TODO: Using the median, mean, decide the threshold. Probably have a trackbar to decide this too.
 
+    pdb.set_trace()
     while True:
         # Capture the frames one by one
         ret, frame = cap.read()
