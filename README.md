@@ -13,6 +13,8 @@ $ python concert.py
 
 ## TODO:
 - Archive the scatterplot and the MIDI file later.
+- Try to do a Histogram Backprojection
+- Try the YCbCr space using the paper written by Ngan and Chai.
 
 ## Preprocessing involved
 The following preprocessing is conducted:

@@ -4,12 +4,14 @@ import pdb
 import cv2
 import musicgen
 from optparse import OptionParser
+import matplotlib.pyplot as plt
 
 # List of nice colors for the music-mapper
 colors = [(255, 255, 255), (219, 10, 91), (207, 0, 15), (210, 82, 127), (154, 18, 179), (31, 58, 147), (22, 160, 133), (247, 202, 24), (249, 105, 14), (149, 165, 166), (103, 65, 114), (255, 255, 255)]
 
 parser = OptionParser()
 parser.add_option("-n", "--num", dest="num", type="int", default=2)
+parser.add_option("-d", "--deb", dest="debug", action="store_true", default=False)
 
 def generateWallpaper(shape):
     namedWindow = "Wallpaper"
@@ -32,13 +34,54 @@ def drawRectangles(img):
     cv2.rectangle(img, (i-50,j-100), (i+50, j+100), (255, 255, 0), 1)
 
     # Return in the form of (rows, cols, 8).
-    return img, None
+    return img
+
+def skin_detect_hsv(frame, opt, ref=None):
+    if opt is 'wo_ref':
+        # Algorithm when a reference is absent
+        minH, maxH, minS, maxS, minV, maxV = 0, 14, 66, 154, 110, 238
+        erosion_size = 5
+        dil_size = 4
+        median_size = 4
+
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        hsv = cv2.inRange(hsv, np.array([minH, minS, minV]), np.array([maxH, maxS, maxV]))
+
+        erode_element, dil_element = None, None
+        erode_element = cv2.getStructuringElement(cv2.MORPH_RECT, (2*erosion_size+1, 2*erosion_size+1), (erosion_size, erosion_size))
+        dil_element = cv2.getStructuringElement(cv2.MORPH_RECT, (2*dil_size+1, 2*dil_size+1), (dil_size, dil_size))
+        hsv = cv2.medianBlur(hsv, median_size*2+1)
+        hsv = cv2.dilate(hsv, np.ones((9,9),np.uint8))
+
+        # Contour Detection
+        contours = None
+
+        cv2.waitKey(50)
+        contours, hierarchy = cv2.findContours(hsv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        return contours, hierarchy
+
+    if opt is 'wt_ref':
+        # Algorithm when a reference is present
+
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+        # Calculating frame histogram
+        roi_hist = cv2.calcHist([hsv], [0,1], None, [180, 256], [0, 180, 0, 256])
+
+        cv2.normalize(roi_hist, roi_hist, 0, 255, cv2.NORM_MINMAX)
+        dst = cv2.calcBackProject([ref], [0,1], roi_hist, [0,180,0,256],1)
+
+        pdb.set_trace()
+
+        cv2.imshow("Concert", dst)
+        cv2.waitKey(25)
+        contours, hierarchy = cv2.findContours(dst, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        return contours, hierarchy
 
 
 def webCamCapture():
     cap = cv2.VideoCapture(0)
     windowName = "Concert"
-    minH, maxH, minS, maxS, minV, maxV = 0, 14, 66, 154, 110, 238
     erosion_size = 5
     dil_size = 4
     median_size = 4
@@ -53,24 +96,35 @@ def webCamCapture():
 
     # TODO: Make a system here to capture hand color and decide the boundaries for H, S, V for thresholding.
     start = time.time()
-    roi_h = roi_s = roi_v = np.array([])
-    while True:
-        ret, frame = cap.read()
-        frame, rects = drawRectangles(frame)
-        rows = frame.shape[0]
-        cols = frame.shape[1]
-        cv2.imshow("initing", frame)
-        cv2.waitKey(25)
-        if (time.time()-start > 8):
-            roi = frame[rows/2-50:rows/2+50, cols/2-100:cols/2+100]
-            roi_h = roi[:,:,0]
-            roi_s = roi[:,:,1]
-            roi_v = roi[:,:,2]
-            break
+    if opts.debug is True:
+        roi_h = roi_s = roi_v = np.array([])
+        while True:
+            ret, frame = cap.read()
+            frame = drawRectangles(frame)
+            rows = frame.shape[0]
+            cols = frame.shape[1]
+            cv2.imshow("initing", frame)
+            cv2.waitKey(25)
+            if (time.time()-start > 8):
+                # Slice the required search target
+                target = frame[rows/2-50:rows/2+50, cols/2-100:cols/2+100]
+                hsvt = cv2.cvtColor(target, cv2.COLOR_BGR2HSV)
+                cv2.destroyWindow("initing")
+                
+                # Do a HSV histogram analysis here.
+                hist_h = cv2.calcHist([hsvt], [0], None, [256], [0, 256])
+                pdb.set_trace()
+                plt.hist(hsvt[:,:,0].ravel(), 256, [0, 256])
+                plt.show()
+                plt.hist(hsvt[:,:,1].ravel(), 256, [0, 256])
+                plt.show()
+                plt.hist(hsvt[:,:,2].ravel(), 256, [0, 256])
+                plt.show()
 
-        # TODO: Using the median, mean, decide the threshold. Probably have a trackbar to decide this too.
+                break
 
-    pdb.set_trace()
+            # TODO: Using the median, mean, decide the threshold. Probably have a trackbar to decide this too.
+
     while True:
         # Capture the frames one by one
         ret, frame = cap.read()
@@ -79,21 +133,8 @@ def webCamCapture():
             wallpaper = generateWallpaper(frame.shape)
             itx = 1
 
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        hsv = cv2.inRange(hsv, np.array([minH, minS, minV]), np.array([maxH, maxS, maxV]))
-
-        erode_element, dil_element = None, None
-        erode_element = cv2.getStructuringElement(cv2.MORPH_RECT, (2*erosion_size+1, 2*erosion_size+1), (erosion_size, erosion_size))
-        dil_element = cv2.getStructuringElement(cv2.MORPH_RECT, (2*dil_size+1, 2*dil_size+1), (dil_size, dil_size))
-        hsv = cv2.medianBlur(hsv, median_size*2+1)
-        hsv = cv2.dilate(hsv, np.ones((9,9),np.uint8))
-        cv2.waitKey(25)
-
-        # Contour Detection
-        contours = None
-
-        cv2.waitKey(50)
-        contours, hierarchy = cv2.findContours(hsv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = skin_detect_hsv(frame, 'wt_ref', hsvt)
+        continue
 
         # TODO: Logic here for both the hands
         # Generate their areas first.
