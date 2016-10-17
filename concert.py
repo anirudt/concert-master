@@ -13,6 +13,27 @@ parser = OptionParser()
 parser.add_option("-n", "--num", dest="num", type="int", default=2)
 parser.add_option("-d", "--deb", dest="debug", action="store_true", default=False)
 
+def getMinMax(hist_h, hist_s, hist_v):
+    """ helper: Returns the minP, maxP from the histogram. """
+    minH, maxH = 0, 14
+    thresh_s = hist_s.max() * 5.0/100
+    space_s, _ = np.where(hist_s > thresh_s)
+    minS = space_s[0]
+    maxS = space_s[-1]; itx = space_s.size - 1;
+    while maxS > minS+90:
+        itx-=1
+        maxS = space_s[itx]
+
+    thresh_v = hist_v.max() * 5.0/100
+    space_v, _ = np.where(hist_v > thresh_v)
+    minV = space_v[0]
+    maxV = space_v[-1]; itx = space_v.size - 1;
+    if maxV < 200:
+        maxV = 200
+
+    return minH, maxH, minS, maxS, minV, maxV
+
+
 def generateWallpaper(shape):
     namedWindow = "Wallpaper"
     white = np.ones(shape, dtype=np.uint8) * 255
@@ -36,48 +57,59 @@ def drawRectangles(img):
     # Return in the form of (rows, cols, 8).
     return img
 
-def skin_detect_hsv(frame, opt, ref=None):
+def skin_detect_hsv(frame, opt, hsvt=None):
+    erosion_size = 5
+    dil_size = 4
+    median_size = 4
     if opt is 'wo_ref':
         # Algorithm when a reference is absent
+
         minH, maxH, minS, maxS, minV, maxV = 0, 14, 66, 154, 110, 238
-        erosion_size = 5
-        dil_size = 4
-        median_size = 4
 
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        hsv = cv2.inRange(hsv, np.array([minH, minS, minV]), np.array([maxH, maxS, maxV]))
-
-        erode_element, dil_element = None, None
-        erode_element = cv2.getStructuringElement(cv2.MORPH_RECT, (2*erosion_size+1, 2*erosion_size+1), (erosion_size, erosion_size))
-        dil_element = cv2.getStructuringElement(cv2.MORPH_RECT, (2*dil_size+1, 2*dil_size+1), (dil_size, dil_size))
-        hsv = cv2.medianBlur(hsv, median_size*2+1)
-        hsv = cv2.dilate(hsv, np.ones((9,9),np.uint8))
-
-        # Contour Detection
-        contours = None
-
-        cv2.waitKey(50)
-        contours, hierarchy = cv2.findContours(hsv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        return contours, hierarchy
 
     if opt is 'wt_ref':
         # Algorithm when a reference is present
 
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        hist_h = cv2.calcHist([hsvt], [0], None, [256], [0, 256])
+        hist_s = cv2.calcHist([hsvt], [1], None, [256], [0, 256])
+        hist_v = cv2.calcHist([hsvt], [2], None, [256], [0, 256])
+        minH, maxH, minS, maxS, minV, maxV = getMinMax(hist_h, hist_s, hist_v)
 
-        # Calculating frame histogram
-        roi_hist = cv2.calcHist([hsv], [0,1], None, [180, 256], [0, 180, 0, 256])
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    hsv = cv2.inRange(hsv, np.array([minH, minS, minV]), np.array([maxH, maxS, maxV]))
 
-        cv2.normalize(roi_hist, roi_hist, 0, 255, cv2.NORM_MINMAX)
-        dst = cv2.calcBackProject([ref], [0,1], roi_hist, [0,180,0,256],1)
+    erode_element, dil_element = None, None
+    erode_element = cv2.getStructuringElement(cv2.MORPH_RECT, (2*erosion_size+1, 2*erosion_size+1), (erosion_size, erosion_size))
+    dil_element = cv2.getStructuringElement(cv2.MORPH_RECT, (2*dil_size+1, 2*dil_size+1), (dil_size, dil_size))
+    hsv = cv2.medianBlur(hsv, median_size*2+1)
+    hsv = cv2.dilate(hsv, np.ones((9,9),np.uint8))
+    bhsv = hsv
 
-        pdb.set_trace()
+    cv2.imshow("binarized", hsv)
+    cv2.waitKey(25)
 
-        cv2.imshow("Concert", dst)
-        cv2.waitKey(25)
-        contours, hierarchy = cv2.findContours(dst, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        return contours, hierarchy
+    # Contour Detection
+    contours = None
 
+    cv2.waitKey(50)
+    contours, hierarchy = cv2.findContours(hsv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    return bhsv, contours, hierarchy
+
+def skin_detect_ycbcr(frame):
+    """Uses the YCbCr space to detect the skin regions. """
+    Cr_min, Cr_max, Cb_min, Cb_max = 133, 150, 77, 127
+    # Constants for finding range of skin color in YCrCb
+    min_YCrCb = np.array([0,Cr_min,Cb_min], np.uint8)
+    max_YCrCb = np.array([255,Cr_max,Cb_max], np.uint8)
+
+    # Convert image to YCrCb
+    imageYCrCb = cv2.cvtColor(frame, cv2.COLOR_BGR2YCR_CB)
+    # Find region with skin tone in YCrCb image
+    skinRegion = cv2.inRange(imageYCrCb, min_YCrCb, max_YCrCb) 
+    # Do contour detection on skin region
+    contours, hierarchy = cv2.findContours(skinRegion, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    return imageYCrCb, contours, hierarchy
 
 def webCamCapture():
     cap = cv2.VideoCapture(0)
@@ -112,14 +144,12 @@ def webCamCapture():
                 cv2.destroyWindow("initing")
                 
                 # Do a HSV histogram analysis here.
-                hist_h = cv2.calcHist([hsvt], [0], None, [256], [0, 256])
-                pdb.set_trace()
-                plt.hist(hsvt[:,:,0].ravel(), 256, [0, 256])
-                plt.show()
-                plt.hist(hsvt[:,:,1].ravel(), 256, [0, 256])
-                plt.show()
-                plt.hist(hsvt[:,:,2].ravel(), 256, [0, 256])
-                plt.show()
+                #plt.hist(hsvt[:,:,0].ravel(), 256, [0, 256])
+                #plt.show()
+                #plt.hist(hsvt[:,:,1].ravel(), 256, [0, 256])
+                #plt.show()
+                #plt.hist(hsvt[:,:,2].ravel(), 256, [0, 256])
+                #plt.show()
 
                 break
 
@@ -133,8 +163,7 @@ def webCamCapture():
             wallpaper = generateWallpaper(frame.shape)
             itx = 1
 
-        contours, hierarchy = skin_detect_hsv(frame, 'wt_ref', hsvt)
-        continue
+        hsv, contours, hierarchy = skin_detect_ycbcr(frame)
 
         # TODO: Logic here for both the hands
         # Generate their areas first.
@@ -144,6 +173,7 @@ def webCamCapture():
                 secLarge = largestContour
                 largestContour = i
 
+        cv2.drawContours(hsv, contours, largestContour, np.array([0, 0, 255]), 1);
         if len(contours) == 0:
             continue
 
@@ -156,8 +186,8 @@ def webCamCapture():
             centroids.append(first_cy)
             new_wp = wallpaper
 
-            cv2.circle(new_wp, (X-first_cx, first_cy), 5, (0, 0, red_val), -1)
-            cv2.imshow(windowName, new_wp)
+            cv2.circle(frame, (first_cx, first_cy), 5, (0, 0, red_val), -1)
+            cv2.imshow(windowName, hsv)
 
         if opts.num == 2:
             print "Two hands"
@@ -197,4 +227,3 @@ def webCamCapture():
 if __name__ == '__main__':
     time.sleep(3)
     webCamCapture()
-

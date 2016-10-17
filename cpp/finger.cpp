@@ -60,7 +60,7 @@ int main()
 
       }
       drawContours(frame, contours, largestContour, Scalar(0, 0, 255), 1);
-      imshow(windowName, frame);
+      imshow(windowName,hsv);
 
       if (waitKey(30) >= 0) break;
   }
