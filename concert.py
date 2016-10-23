@@ -1,10 +1,12 @@
 import numpy as np
 import time
 import pdb
+import math
 import cv2
 import musicgen
 from optparse import OptionParser
 import matplotlib.pyplot as plt
+from cmath import pi
 
 # List of nice colors for the music-mapper
 colors = [(255, 255, 255), (219, 10, 91), (207, 0, 15), (210, 82, 127), (154, 18, 179), (31, 58, 147), (22, 160, 133), (247, 202, 24), (249, 105, 14), (149, 165, 166), (103, 65, 114), (255, 255, 255)]
@@ -12,6 +14,8 @@ colors = [(255, 255, 255), (219, 10, 91), (207, 0, 15), (210, 82, 127), (154, 18
 parser = OptionParser()
 parser.add_option("-n", "--num", dest="num", type="int", default=2)
 parser.add_option("-d", "--deb", dest="debug", action="store_true", default=False)
+parser.add_option("-f", "--fre", dest="free", action="store_true", default=False)
+parser.add_option("-g", "--ges", dest="gest", action="store_true", default=False)
 
 def getMinMax(hist_h, hist_s, hist_v):
     """ helper: Returns the minP, maxP from the histogram. """
@@ -33,6 +37,13 @@ def getMinMax(hist_h, hist_s, hist_v):
 
     return minH, maxH, minS, maxS, minV, maxV
 
+def getAngle(start, end, far):
+    tan_A = (start[1] - far[1])*1.0/(start[0] - far[0])
+    tan_B = (end[1] - far[1])*1.0/(end[0] - far[0])
+    m = (tan_A - tan_B)*1.0/(1 + tan_A * tan_B)
+    print m
+    angle = (math.atan(m)+pi/2) * 180 / pi
+    return angle
 
 def generateWallpaper(shape):
     namedWindow = "Wallpaper"
@@ -111,6 +122,34 @@ def skin_detect_ycbcr(frame):
 
     return imageYCrCb, contours, hierarchy
 
+def gesture_single(img, contours, largestContour):
+    """ Handles the largest Contour and returns the gesture ID. """
+    cnt = contours[largestContour]
+    hull = cv2.convexHull(cnt, returnPoints=False)
+    defects = cv2.convexityDefects(cnt, hull)
+    junctions = []
+
+    # For each defect, find the angles associated.
+    for row in xrange(defects.shape[0]):
+        # Handle the returns.
+        start, end, far, dist = defects[row,0]
+        start = tuple(cnt[start][0])
+        end = tuple(cnt[end][0])
+        far = tuple(cnt[far][0])
+        print start, end, far
+        theta = getAngle(start, end, far)
+        # TODO: Impose some restrictions on theta and distance for detection.
+        cv2.line(img,start,end,[0,255,0],2)
+        cv2.circle(img,far,5,[0,0,255],-1)
+        cv2.imshow("Concert", img)
+        cv2.waitKey(25)
+        pdb.set_trace()
+        print theta
+        if theta > 80:
+            continue
+        else:
+            junctions.append(row)
+
 def webCamCapture():
     cap = cv2.VideoCapture(0)
     windowName = "Concert"
@@ -179,15 +218,18 @@ def webCamCapture():
 
         if opts.num == 1:
             print "One hand", red_val
-            first = cv2.moments(contours[largestContour])
-            first_cx = int(first['m10']/first['m00'])
-            first_cy = int(first['m01']/first['m00'])
-            centroids.append(first_cx)
-            centroids.append(first_cy)
-            new_wp = wallpaper
+            if opts.gest:
+                gesture_single(hsv, contours, largestContour)
+            elif opts.free:
+                first = cv2.moments(contours[largestContour])
+                first_cx = int(first['m10']/first['m00'])
+                first_cy = int(first['m01']/first['m00'])
+                centroids.append(first_cx)
+                centroids.append(first_cy)
+                new_wp = wallpaper
 
-            cv2.circle(frame, (first_cx, first_cy), 5, (0, 0, red_val), -1)
-            cv2.imshow(windowName, hsv)
+                cv2.circle(frame, (first_cx, first_cy), 5, (0, 0, red_val), -1)
+                cv2.imshow(windowName, hsv)
 
         if opts.num == 2:
             print "Two hands"
