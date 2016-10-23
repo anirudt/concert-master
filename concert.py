@@ -17,6 +17,13 @@ parser.add_option("-d", "--deb", dest="debug", action="store_true", default=Fals
 parser.add_option("-f", "--fre", dest="free", action="store_true", default=False)
 parser.add_option("-g", "--ges", dest="gest", action="store_true", default=False)
 
+def tan2deg(tan):
+    rad = math.atan(tan)
+    if rad > 0:
+        return 180.0*rad/pi
+    else:
+        return 180 + 180.0*rad/pi
+
 def getMinMax(hist_h, hist_s, hist_v):
     """ helper: Returns the minP, maxP from the histogram. """
     minH, maxH = 0, 14
@@ -38,11 +45,12 @@ def getMinMax(hist_h, hist_s, hist_v):
     return minH, maxH, minS, maxS, minV, maxV
 
 def getAngle(start, end, far):
-    tan_A = (start[1] - far[1])*1.0/(start[0] - far[0])
-    tan_B = (end[1] - far[1])*1.0/(end[0] - far[0])
-    m = (tan_A - tan_B)*1.0/(1 + tan_A * tan_B)
-    print m
-    angle = (math.atan(m)+pi/2) * 180 / pi
+    tan_A = (far[1] - start[1])*1.0/(start[0] - far[0])
+    tan_B = (far[1] - end[1])*1.0/(end[0] - far[0])
+    a, b = tan2deg(tan_A), tan2deg(tan_B)
+    print start, end, far
+    print a, b
+    angle = abs(a-b)
     return angle
 
 def generateWallpaper(shape):
@@ -143,12 +151,18 @@ def gesture_single(img, contours, largestContour):
         cv2.circle(img,far,5,[0,0,255],-1)
         cv2.imshow("Concert", img)
         cv2.waitKey(25)
-        pdb.set_trace()
-        print theta
-        if theta > 80:
+        print dist
+        # Primary filter: Test if distance > 20k.
+        if dist < 18000:
             continue
         else:
+            print theta
+            print "Junctions detected!"
+            pdb.set_trace()
             junctions.append(row)
+
+    return junctions
+
 
 def webCamCapture():
     cap = cv2.VideoCapture(0)
