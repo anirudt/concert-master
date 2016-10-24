@@ -227,20 +227,23 @@ def webCamCapture():
                 largestContour = i
 
         cv2.drawContours(hsv, contours, largestContour, np.array([0, 0, 255]), 1);
+        new_wp = wallpaper
         if len(contours) == 0:
             continue
 
         if opts.num == 1:
             print "One hand", red_val
             if opts.gest:
-                gesture_single(hsv, contours, largestContour)
+                junctions = gesture_single(hsv, contours, largestContour)
+                # TODO: On the basis of the number of junctions identified,
+                # choose a certain music piece.
             elif opts.free:
                 first = cv2.moments(contours[largestContour])
                 first_cx = int(first['m10']/first['m00'])
                 first_cy = int(first['m01']/first['m00'])
                 centroids.append(first_cx)
                 centroids.append(first_cy)
-                new_wp = wallpaper
+            
 
                 cv2.circle(frame, (first_cx, first_cy), 5, (0, 0, red_val), -1)
                 cv2.imshow(windowName, hsv)

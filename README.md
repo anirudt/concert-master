@@ -1,5 +1,8 @@
 ## What?
 Concert-Master is a gesture based music synthesis tool.
+It currently offers two kinds of features:
+* Continuous mode: Create a piece of music purely from first principles (read notes) and accurate control of your hand.
+* Gesture mode: Signify the serial number of the piece with your fingers, and the program plays the selected piece!
 
 ## Dependencies
 - ```opencv```
