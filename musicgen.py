@@ -3,8 +3,9 @@ from pyknon.genmidi import Midi
 from pyknon.music import NoteSeq, Note
 import os
 import pdb
-
 import pygame
+
+gest_id2song = ['roll.mp3', 'ball.mp3', 'waka.mp3', 'danse.mp3']
 
 def getSingleObj(fx, fy, gx, gy):
     """ Get 2 note objects and keep writing them. """
@@ -32,6 +33,15 @@ def play_music(music_file):
     while pygame.mixer.music.get_busy():
         # check if playback has finished
         clock.tick(30)
+
+def play_song(gest_id):
+    """
+    Plays song corresponding to the Gesture ID
+    """
+    pygame.mixer.init()
+    pygame.mixer.music.load('songs/' + gest_id2song[gest_id])
+    pygame.mixer.music.play()
+
 
 def proc(centroid_list, num):
     num_notes = len(centroid_list)/4

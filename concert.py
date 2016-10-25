@@ -7,6 +7,10 @@ import musicgen
 from optparse import OptionParser
 import matplotlib.pyplot as plt
 from cmath import pi
+desc = " This is a gesture based music synthesis tool. It has 2 modes of operation: \
+        1. Using a centroid of the hands approach, this could accommodate both single and double hands. This creates a music file, specifications \
+        of which are written in the README file. \
+        2. Using a gesture based model, which accommodates 4 actions to play 4 corresponding songs."
 
 # List of nice colors for the music-mapper
 colors = [(255, 255, 255), (219, 10, 91), (207, 0, 15), (210, 82, 127), (154, 18, 179), (31, 58, 147), (22, 160, 133), (247, 202, 24), (249, 105, 14), (149, 165, 166), (103, 65, 114), (255, 255, 255)]
@@ -157,10 +161,14 @@ def gesture_single(img, contours, largestContour):
             continue
         else:
             print theta
-            print "Junctions detected!"
+            print "Junction detected!"
             pdb.set_trace()
-            junctions.append(row)
+            # Append the angle to the row for further fun
+            junc = list(defects[row, 0])
+            junc.append(theta)
+            junctions.append(junc)
 
+    junctions = np.array(junctions)
     return junctions
 
 
@@ -177,6 +185,7 @@ def webCamCapture():
     start = time.time()
     itx = 0
     red_val = 0
+    gest_count= np.zeros(4)
     (opts, args) = parser.parse_args()
 
     # TODO: Make a system here to capture hand color and decide the boundaries for H, S, V for thresholding.
@@ -235,8 +244,19 @@ def webCamCapture():
             print "One hand", red_val
             if opts.gest:
                 junctions = gesture_single(hsv, contours, largestContour)
+                pdb.set_trace()
                 # TODO: On the basis of the number of junctions identified,
                 # choose a certain music piece.
+                gest_id = sum(junctions[:,4] < 80) % 4
+
+                # TODO: Add this to the help-print text.
+                
+                # Draw the gesture selected, and in case this gesture is counted for 10 times, we go ahead with implementing it.
+                if gest_count[gest_id] >= gest_thresh:
+                    print "Selecting gesture id: {0}".format(gest_id)
+                    musicgen.play_song(gest_id)
+                    break
+
             elif opts.free:
                 first = cv2.moments(contours[largestContour])
                 first_cx = int(first['m10']/first['m00'])
@@ -280,8 +300,9 @@ def webCamCapture():
     cv2.destroyAllWindows()
     cv2.imwrite("scatter.png", new_wp)
 
-    musicgen.proc(centroids, opts.num)
-    print "Done with writing music files."
+    if opts.fre:
+        musicgen.proc(centroids, opts.num)
+        print "Done with writing music files."
 
 if __name__ == '__main__':
     time.sleep(3)
