@@ -15,7 +15,9 @@ desc = " This is a gesture based music synthesis tool. It has 2 modes of operati
 # List of nice colors for the music-mapper
 colors = [(255, 255, 255), (219, 10, 91), (207, 0, 15), (210, 82, 127), (154, 18, 179), (31, 58, 147), (22, 160, 133), (247, 202, 24), (249, 105, 14), (149, 165, 166), (103, 65, 114), (255, 255, 255)]
 
-parser = OptionParser()
+gest_thresh = 10
+
+parser = OptionParser(description=desc)
 parser.add_option("-n", "--num", dest="num", type="int", default=2)
 parser.add_option("-d", "--deb", dest="debug", action="store_true", default=False)
 parser.add_option("-f", "--fre", dest="free", action="store_true", default=False)
@@ -162,12 +164,14 @@ def gesture_single(img, contours, largestContour):
         else:
             print theta
             print "Junction detected!"
-            pdb.set_trace()
+            #pdb.set_trace()
             # Append the angle to the row for further fun
             junc = list(defects[row, 0])
             junc.append(theta)
             junctions.append(junc)
 
+    if len(junctions) == 0:
+      return None
     junctions = np.array(junctions)
     return junctions
 
@@ -221,6 +225,7 @@ def webCamCapture():
         # Capture the frames one by one
         ret, frame = cap.read()
         X = max(frame.shape) 
+        Y = min(frame.shape)
         if itx == 0: 
             wallpaper = generateWallpaper(frame.shape)
             itx = 1
@@ -244,18 +249,28 @@ def webCamCapture():
             print "One hand", red_val
             if opts.gest:
                 junctions = gesture_single(hsv, contours, largestContour)
-                pdb.set_trace()
+                if junctions is None:
+                  print "No junctions detected"
+                  continue
                 # TODO: On the basis of the number of junctions identified,
                 # choose a certain music piece.
                 gest_id = sum(junctions[:,4] < 80) % 4
 
+                print 'Gesture ID', gest_id
+
                 # TODO: Add this to the help-print text.
+                cv2.putText(hsv, "Detected Gesture ID {0}".format(gest_id), (X/2, Y/2), \
+                    cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
                 
                 # Draw the gesture selected, and in case this gesture is counted for 10 times, we go ahead with implementing it.
                 if gest_count[gest_id] >= gest_thresh:
                     print "Selecting gesture id: {0}".format(gest_id)
                     musicgen.play_song(gest_id)
                     break
+
+                else:
+                  gest_count[gest_id] += 1
+                  continue
 
             elif opts.free:
                 first = cv2.moments(contours[largestContour])
@@ -300,10 +315,11 @@ def webCamCapture():
     cv2.destroyAllWindows()
     cv2.imwrite("scatter.png", new_wp)
 
-    if opts.fre:
+    if opts.free:
         musicgen.proc(centroids, opts.num)
         print "Done with writing music files."
 
 if __name__ == '__main__':
     time.sleep(3)
-    webCamCapture()
+    while True:
+      ret = webCamCapture()

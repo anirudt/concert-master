@@ -4,8 +4,17 @@ from pyknon.music import NoteSeq, Note
 import os
 import pdb
 import pygame
+import signal
 
-gest_id2song = ['roll.mp3', 'ball.mp3', 'waka.mp3', 'danse.mp3']
+gest_id2song = ['roll.mp3', 'fire.mp3', 'burn.mp3', 'allofme.mp3']
+
+def capturePause():
+    # TODO: Perform signal handling here.
+    pygame.init() # May suffice
+    # pygame.mixer.music.pause()
+
+    # Gracefully exit.
+
 
 def getSingleObj(fx, fy, gx, gy):
     """ Get 2 note objects and keep writing them. """
@@ -38,9 +47,7 @@ def play_song(gest_id):
     """
     Plays song corresponding to the Gesture ID
     """
-    pygame.mixer.init()
-    pygame.mixer.music.load('songs/' + gest_id2song[gest_id])
-    pygame.mixer.music.play()
+    play_music('songs/'+gest_id2song[gest_id])
 
 
 def proc(centroid_list, num):
