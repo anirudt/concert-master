@@ -164,7 +164,7 @@ components, the detection could be marred by having objects of similar color, an
 in such scenarios.
 
 The proposed system has options for all the three methods listed above, and hence can be switched based
-on the application/environment conditions. The software section will discuss more about switching between these modes.
+on the application/environmental conditions. The software section will discuss more about switching between these modes.
 
 \section{System Design}
 The system was built on a x64 machine running Ubuntu 14.04 in \textit{Python}. The hardware module is just a webcam,
@@ -172,8 +172,9 @@ which in this case was the default laptop webcamera. The software module had the
 \begin{itemize}
   \item Python 2.7
   \item OpenCV (2.4.x)
-  \item Pyknon \footnote{https://github.com/kroger/pyknon}
-  \item Numpy
+  \item Pyknon \footnote{https://github.com/kroger/pyknon} (for allowing to create musical notes)
+  \item Numpy (for matrix/array processing)
+  \item Pygame (for playing the music)
 \end{itemize}
 
 The software was developed with a user friendly interface, allowing the users to provide
@@ -196,6 +197,9 @@ options and arguments. The list of options include:
       hands and computes a unique identifier for music synthesis and pipes it to the music synthesis process. To guide
       the user, the program also draws a grid showing the pitch and octave variations in the x and y directions
       respectively. This mode computes the centroids of the contours and sends it to the music synthesis process.
+
+      The music synthesis process here evaluates the octave and pitch based on % TODO
+      and thus concatenates the entire gesture and creates a song, and plays it.
       \par\null\par
     \item \textit{Gesture selection}: Under this feature, the RGB frame is converted to a Y-Cb-Cr frame. The
       resultant binarized, thresholded image is sent for a contour analysis, following which the largest contour
@@ -208,6 +212,10 @@ options and arguments. The list of options include:
       based on the distance from the convex hull and the defect, and the angle subtended between two consecutive
       hull vertices at the defect.
       % TODO: Add equation here.
+
+      After having detected the number of junctions in the gesture implied, the gesture is selected and a corresponding
+      song is played. Currently, only 4 gestures are made, but due to its geometric rule based nature, it is natural that
+      it can be extended to custom gestures as well.
 
   \end{itemize}
 
