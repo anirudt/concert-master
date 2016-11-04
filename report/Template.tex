@@ -55,7 +55,7 @@ specific tone of a specific octave, and (2) playing a song from a list of them.
 The detection of the hands are done using skin detection in the Y-Cb-Cr space
 followed by a contour analysis of the same. Other modes also include segmentation
 in the HSV space, and adaptive thresholding using histogram backprojection.
-The system is programmed in Python and has a friendly command line
+The system is programmed in \textit{Python} and has a friendly command line
 interface for operating various modes.
 \end{abstract}
 %
@@ -83,8 +83,8 @@ simplicity of the hardware and the granularity of selection of music pieces.
 The paper is organised as follows. Section I presents a brief introduction to the research area that the system targets and
 the associated proposed system. Section II presents the prior art in the area and the
 pathflow of methodology associated. Coming to section III, it talks about the system design
-and the implementation of the system including the modes of operation. Section 4 conveys the
-preliminary results and observations, while Section 5 concludes with applications and future
+and the implementation of the system including the modes of operation. Section IV conveys the
+preliminary results and observations, while Section V concludes with applications and future
 work proposed.
 
 \section{METHODOLOGY}
@@ -96,11 +96,12 @@ direction occurs in image processing methods for skin detection. Primitive metho
 suggest the use of HSV thresholding; with the HSV space calculated as follows:
 
 \begin{equation}
+  \label{eq:1}
   R' = R/255,\ G' = G/255,\ B' = B/255
 \end{equation}
 \begin{equation}
   \begin{multlined}
-C_{max} = max(R', G', B'),],\\
+C_{max} = max(R', G', B')\\
 C_{min} = min(R', G', B')
   \end{multlined}
 \end{equation}
@@ -127,28 +128,88 @@ C_{min} = min(R', G', B')
 \end{equation}
 
 Thus, using the above equations, the HSV space is generated from the RGB color space.
+After doing so, the image is thresholded as follows. Samples are thresholded with respect
+to minimum and maximum conditions: H(0, 14), S(66, 154) and V(110, 238).
 However, as is palpable from our experiments and previous research work, the HSV space
 was not resilient to changes in illumination, and hence skin detection in such cases
 was hampered severely.
 
-\section{TYPE-STYLE AND FONTS}
-\label{sec:typestyle}
+As a result of this, some steps were taken in the experiments. The proposed system considers
+a 10 second initial learning phase when it requests the user to place his/her hand in certain
+squares of the window. The system thereby attempts to estimate the concentration of pixels in the
+hands, and thereby tries to learn the thresholds adaptively using a histogram backprojection method.
+This method can be seen in action in the above figure. 
 
-To achieve the best rendering both in printed proceedings and electronic proceedings, we
-strongly encourage you to use Times-Roman font.  In addition, this will give
-the proceedings a more uniform look.  Use a font that is no smaller than nine
-point type throughout the paper, including figure captions.
+Though this method turns out to be much better than the naive HSV thresholding method, this method is
+also not entirely illumination invariant. \cite{Chai1999} proposed a method of skin detection by transforming
+the image space to the Y-Cb-Cr space. Y-Cb-Cr is a family of color spaces used as a part of the color image
+pipeline in video and digital photography systems. It is used to separate out a luma signal (Y′) that can be 
+stored with high resolution or transmitted at high bandwidth, and two chroma components (Cb and Cr) 
+that can be bandwidth-reduced, subsampled, compressed, or otherwise treated separately for improved system efficiency.
 
-In nine point type font, capital letters are 2 mm high.  {\bf If you use the
-smallest point size, there should be no more than 3.2 lines/cm (8 lines/inch)
-vertically.}  This is a minimum spacing; 2.75 lines/cm (7 lines/inch) will make
-the paper much more readable.  Larger type sizes require correspondingly larger
-vertical spacing.  Please do not double-space your paper.  TrueType or
-Postscript Type 1 fonts are preferred.
+The components can be calculated as follows. As in \ref{eq:1}, the analog R', G' and B' components are calculated.
+\[
+  \begin{split}
+    Y &= 16 + (65.481R' + 128.553G' + 24.966B')
+    \\
+    C_B &= 128 + (-37.797R' - 74.203G' + 112B')
+    \\
+    C_R &= 128 + (112R - 93.786G' - 18.214B')
+  \end{split}
+\]
+The above $Y,C_B$ and $C_R$ values are measured in the 8 bit format. Thus, \cite{Chai1999} noted that thresholding
+in this space yielded even better results, as it turned out to be illumination invariant to a good extent,
+discounting any drastic changes (either very dark or very light). However, due to thresholding with Chroma
+components, the detection could be marred by having objects of similar color, and hence this method fails
+in such scenarios.
 
-The first paragraph in each section should not be indented, but all the
-following paragraphs within the section should be indented as these paragraphs
-demonstrate.
+The proposed system has options for all the three methods listed above, and hence can be switched based
+on the application/environment conditions. The software section will discuss more about switching between these modes.
+
+\section{System Design}
+The system was built on a x64 machine running Ubuntu 14.04 in \textit{Python}. The hardware module is just a webcam,
+which in this case was the default laptop webcamera. The software module had the following dependencies:
+\begin{itemize}
+  \item Python 2.7
+  \item OpenCV (2.4.x)
+  \item Pyknon \footnote{https://github.com/kroger/pyknon}
+  \item Numpy
+\end{itemize}
+
+The software was developed with a user friendly interface, allowing the users to provide
+options and arguments. The list of options include:
+\begin{itemize}
+  \item \texttt{--deb}: Used for employing the Debugging mode.
+  \item \texttt{--num}: Used for specifying the number of hands.
+  \item \texttt{--fre}: Used along with the above option for free music synthesis.
+  \item \texttt{--ges}: Used for a 4-class gesture for music selection, disjoint with the
+    above 2 methods.
+\end{itemize}
+
+\subsection{Feature Processing}
+  As mentioned earlier, the system accepts input from a computer webcamera. The following points illustrate
+  the processing associated:
+  \begin{itemize}
+    \item \textit{Free hand movement}: Under this feature, the RGB frame is converted to a Y-Cb-Cr frame. The
+      resultant binarized, thresholded image is sent for a contour analysis, following which the 2 largest
+      contours are identified. Now, depending upon the user's choice, the program detects one or two of the user's
+      hands and computes a unique identifier for music synthesis and pipes it to the music synthesis process. To guide
+      the user, the program also draws a grid showing the pitch and octave variations in the x and y directions
+      respectively. This mode computes the centroids of the contours and sends it to the music synthesis process.
+      \par\null\par
+    \item \textit{Gesture selection}: Under this feature, the RGB frame is converted to a Y-Cb-Cr frame. The
+      resultant binarized, thresholded image is sent for a contour analysis, following which the largest contour
+      is identified. After this, a convex hull is fitted over the identified contour, along with the convexity defects.
+      Thus, this gives us the information about the vertices of the convex polygon fitted, and the defects,
+      which are the points on the contour which lie farthest from the fitted polygon. The main idea of this is
+      to find the junctions between the fingers, with which multiple gestures can be idenitified and classified.
+      
+      However, the convexity defects contain extraneous points than the desired junctions, and hence need filtering,
+      based on the distance from the convex hull and the defect, and the angle subtended between two consecutive
+      hull vertices at the defect.
+      % TODO: Add equation here.
+
+  \end{itemize}
 
 \section{MAJOR HEADINGS}
 \label{sec:majhead}
@@ -255,7 +316,7 @@ The text of the paper should contain discussions on how the paper's
 contributions are related to prior work in the field. It is important
 to put new work in  context, to give credit to foundational work, and
 to provide details associated with the previous work that have appeared
-in the literature. This discussion may be a separate, numbered section
+in the literature. This discussion may be a separate, numbered Section
 or it may appear elsewhere in the body of the manuscript, but it must
 be present.
 
