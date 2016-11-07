@@ -7,10 +7,10 @@ import musicgen
 from optparse import OptionParser
 import matplotlib.pyplot as plt
 from cmath import pi
-desc = " This is a gesture based music synthesis tool. It has 2 modes of operation: \
-        1. Using a centroid of the hands approach, this could accommodate both single and double hands. This creates a music file, specifications \
-        of which are written in the README file. \
-        2. Using a gesture based model, which accommodates 4 actions to play 4 corresponding songs."
+desc = " This is a gesture based music synthesis tool. It has 2 modes of operation: \n\
+1. Using a centroid of the hands approach, this could accommodate both single and double hands. This creates a music file, specifications \
+of which are written in the README file.\n\
+2. Using a gesture based model, which accommodates 4 actions to play 4 corresponding songs."
 
 # List of nice colors for the music-mapper
 colors = [(255, 255, 255), (219, 10, 91), (207, 0, 15), (210, 82, 127), (154, 18, 179), (31, 58, 147), (22, 160, 133), (247, 202, 24), (249, 105, 14), (149, 165, 166), (103, 65, 114), (255, 255, 255)]

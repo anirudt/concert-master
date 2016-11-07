@@ -2,8 +2,9 @@
 %          spconf.sty  - ICASSP/ICIP LaTeX style file, and
 %          IEEEbib.bst - IEEE bibliography style file.
 % --------------------------------------------------------------------------
-\documentclass[letterpaper, 11 pt, twoside, conference]{ieeeconf}
-\usepackage{spconf,amsmath,graphicx,mathtools}
+\documentclass[letterpaper, 10 pt, twoside, conference]{ieeeconf}
+\usepackage{spconf,amsmath,graphicx,mathtools,graphicx}
+\graphicspath{{images/}}
 
 % Example definitions.
 % --------------------
@@ -176,7 +177,12 @@ which in this case was the default laptop webcamera. The software module had the
   \item Numpy (for matrix/array processing)
   \item Pygame (for playing the music)
 \end{itemize}
-
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\columnwidth]{concert.png}
+  \caption{Overall1}
+  \label{Overall1}
+\end{figure}
 The software was developed with a user friendly interface, allowing the users to provide
 options and arguments. The list of options include:
 \begin{itemize}
@@ -218,7 +224,28 @@ options and arguments. The list of options include:
       it can be extended to custom gestures as well.
 
   \end{itemize}
-
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=\columnwidth]{wallpaper.png}
+    \caption{Overall1}
+    \label{Overall1}
+  \end{figure}
+\subsection{Music Generation}
+  The music generation is done using a Python library called Pyknon. The documentation of this library can be found
+  in a book written by the writer of this library. The music module is also differentially drafted for each 
+  of the above operational modes:
+  \begin{itemize}
+    \item \textit{Free hand movement}: The music module receives the \texttt{x} and \texttt{y} coordinates
+      of the hand centroid. The music module divides the image captured into several blocks in the $X$ and $Y$
+      direction. After this, each block represents a certain $(X,Y)$, which corresponds to a certain $(P,O)$,
+      where $P$ is pitch and $O$ is octave. This constitutes one single tone.
+      Using this concept, the musical objects are sampled over every frame, and the musical tones thus generated are
+      concatenated together to form one musical piece. In the end, this piece is synchronously played using
+      \texttt{pygame mixers}.
+      \par\null\par
+    \item \textit{Gesture selection}: The music module receives the gesture ID, and the \texttt{pygame mixer}
+      plays the corresponding song from the playlist.
+    \end{itemize}
 \section{MAJOR HEADINGS}
 \label{sec:majhead}
 
