@@ -71,6 +71,13 @@ The gesture is an important part of human communication,
 and it is used often - even unconsciously - as a means of expression and interaction with the world, having a strong impact on how humans perceive and interpret themselves [1]. There is an important distinction between gesture and movement [2]. Gesture presupposes an intention, a meaning and the movement is the physic action itself (e.g. a set of arm movements waving composes the gesture of saying goodbye). Nowadays, different methods can be used to capture human
 movements using, for instance, video cameras, body wearable sensors or external sensors, such as infra-red Motion Capture (MOCAP) systems. All these processes allow capturing and gathering signal data, from where relevant gesture features can be extracted for further analysis and processing (e.g. estimating amplitude, periodicity, rhythm, diversity, etc., of a gesture or movement). Such features can then be used as inputs for real-time algorithmic music composition systems, paving the way for novel expressive and artistic works, where humans and machines interact in a more semantically and artistically meaningful dialog. The motivation behind this particular system, is the possibility of analyzing human gesture at a higher level. Hence, the musical output can present more abstract and complex relations with the human gestures, rather than the direct mapping of human movements.
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{Appearance_hands.jpg}
+  \caption{Hand Detection serves as the first key to gesture recognition}
+  \label{Overall1}
+\end{figure}
+
 This paper describes the system Concert Master, a modular system that permits the capture and analysis of human gestures using non-invasive methods (uses the ordinary Laptop camera in a well lit room).
 The system supports multiple modes, of which we will talk about in the sections to come. The camera
 captures frames and sends it to a software analyser, which will make sense of the frames depending
@@ -127,6 +134,13 @@ C_{min} = min(R', G', B')
 \begin{equation}
   V = C_{max}
 \end{equation}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\columnwidth]{hsv.png}
+  \caption{The HSV Cylinder Model}
+  \label{Overall1}
+\end{figure}
+
 
 Thus, using the above equations, the HSV space is generated from the RGB color space.
 After doing so, the image is thresholded as follows. Samples are thresholded with respect
@@ -180,7 +194,7 @@ which in this case was the default laptop webcamera. The software module had the
 \begin{figure}[h]
   \centering
   \includegraphics[width=\columnwidth]{concert.png}
-  \caption{Overall1}
+  \caption{The CLI Documentation}
   \label{Overall1}
 \end{figure}
 The software was developed with a user friendly interface, allowing the users to provide
@@ -227,7 +241,7 @@ options and arguments. The list of options include:
   \begin{figure}[h]
     \centering
     \includegraphics[width=\columnwidth]{wallpaper.png}
-    \caption{Overall1}
+    \caption{Wallpaper grid for reference}
     \label{Overall1}
   \end{figure}
 \subsection{Music Generation}

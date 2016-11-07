@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.6.14)  7 NOV 2016 23:45
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.6.14)  8 NOV 2016 00:10
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -220,6 +220,12 @@ LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
 
 LaTeX Warning: Label `Overall1' multiply defined.
 
+
+LaTeX Warning: Label `Overall1' multiply defined.
+
+
+LaTeX Warning: Label `Overall1' multiply defined.
+
 )
 \openout1 = `Template.aux'.
 
@@ -296,33 +302,47 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+<images/Appearance_hands.jpg, id=1, 1280.785pt x 602.25pt>
+File: images/Appearance_hands.jpg Graphic file (type jpg)
+
+<use images/Appearance_hands.jpg>
+Package pdftex.def Info: images/Appearance_hands.jpg used on input line 76.
+(pdftex.def)             Requested size: 195.75569pt x 92.04286pt.
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 
-]
+ <./images/Appearance_hands.jpg>]
+<images/hsv.png, id=11, 1606.0pt x 1204.5pt>
+File: images/hsv.png Graphic file (type png)
+ <use images/hsv.png>
+Package pdftex.def Info: images/hsv.png used on input line 139.
+(pdftex.def)             Requested size: 195.75569pt x 146.81277pt.
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ² in font ptmr7t!
 
-<images/concert.png, id=13, 670.00313pt x 254.45062pt>
+<images/concert.png, id=12, 670.00313pt x 254.45062pt>
 File: images/concert.png Graphic file (type png)
 
 <use images/concert.png>
-Package pdftex.def Info: images/concert.png used on input line 182.
+Package pdftex.def Info: images/concert.png used on input line 196.
 (pdftex.def)             Requested size: 244.6937pt x 92.92612pt.
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 189.
 
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 203.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-) [2 <./images/concert.png>] <images/wallpaper.png, id=24, 642.4pt x 481.8pt>
+) [2 <./images/hsv.png>] <images/wallpaper.png, id=26, 642.4pt x 481.8pt>
 File: images/wallpaper.png Graphic file (type png)
-
-<use images/wallpaper.png>
-Package pdftex.def Info: images/wallpaper.png used on input line 229.
+ <use images/wallpaper.png>
+Package pdftex.def Info: images/wallpaper.png used on input line 243.
 (pdftex.def)             Requested size: 244.6937pt x 183.51964pt.
- [3 <./images/wallpaper.png (PNG copy)>]
+
+[3 <./images/concert.png> <./images/wallpaper.png (PNG copy)>] [4]
 (./Template.bbl)
 
 ** Conference Paper **
@@ -335,16 +355,18 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[4] (./Template.aux)
+[5
+
+] (./Template.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3299 strings out of 495028
- 49356 string characters out of 6181497
+ 3310 strings out of 495028
+ 49589 string characters out of 6181497
  117462 words of memory out of 5000000
- 6465 multiletter control sequences out of 15000+600000
+ 6473 multiletter control sequences out of 15000+600000
  40568 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  38i,15n,23p,904b,277s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -362,10 +384,10 @@ exlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-di
 st/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1
 /urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr
 i8a.pfb>
-Output written on Template.pdf (4 pages, 203434 bytes).
+Output written on Template.pdf (5 pages, 1356007 bytes).
 PDF statistics:
- 76 PDF objects out of 1000 (max. 8388607)
- 53 compressed objects within 1 object stream
+ 81 PDF objects out of 1000 (max. 8388607)
+ 55 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
