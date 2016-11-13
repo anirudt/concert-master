@@ -280,8 +280,11 @@ def webCamCapture():
                 centroids.append(first_cy)
             
 
+                cv2.circle(new_wp, (X-first_cx, first_cy), 5, (0, 0, red_val), -1)
                 cv2.circle(frame, (first_cx, first_cy), 5, (0, 0, red_val), -1)
-                cv2.imshow(windowName, hsv)
+                cv2.namedWindow('centroid')
+                cv2.imshow(windowName, new_wp)
+                cv2.imshow('centroid', frame)
 
         if opts.num == 2:
             print "Two hands"
@@ -306,7 +309,7 @@ def webCamCapture():
             cv2.imshow(windowName, new_wp)
         else:
             print "Never here.", red_val, opts.num
-        if time.time() > start + 25:
+        if time.time() > start + 20:
             break
         red_val += 0.5
         cv2.waitKey(25)
