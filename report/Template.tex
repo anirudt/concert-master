@@ -153,7 +153,7 @@ As a result of this, some steps were taken in the experiments. The proposed syst
 a 10 second initial learning phase when it requests the user to place his/her hand in certain
 squares of the window. The system thereby attempts to estimate the concentration of pixels in the
 hands, and thereby tries to learn the thresholds adaptively using a histogram backprojection method.
-This method can be seen in action in the above figure. 
+This method can be seen in action in Fig. 1.
 
 Though this method turns out to be much better than the naive HSV thresholding method, this method is
 also not entirely illumination invariant. \cite{Chai1999} proposed a method of skin detection by transforming
@@ -162,7 +162,7 @@ pipeline in video and digital photography systems. It is used to separate out a 
 stored with high resolution or transmitted at high bandwidth, and two chroma components (Cb and Cr) 
 that can be bandwidth-reduced, subsampled, compressed, or otherwise treated separately for improved system efficiency.
 
-The components can be calculated as follows. As in \ref{eq:1}, the analog R', G' and B' components are calculated.
+The components can be calculated as follows. As in (\ref{eq:1}), the analog R', G' and B' components are calculated.
 \[
   \begin{split}
     Y &= 16 + (65.481R' + 128.553G' + 24.966B')
@@ -264,11 +264,11 @@ The software is open sourced at this link \footnote{https://github.com/anirudt/c
     \end{itemize}
 \section{Results}
 
-The free mode of the system generates raw unprocessed notes. This can be viewed by the user as in Figure 5,
+The free mode of the system generates raw unprocessed notes. This can be viewed by the user as in Fig. 5,
 where the scatterplot of the user's movement can be tracked; the darker red dots are plotted when the
 user initially starts, while the lighter ones depict the movement of the hand's centroid as it moves
 through time. This dynamic plot is generated to guide the users through the music generation process;
-users can learn from feedback how to move their hands to create customized musical pieces. Also, figures
+users can learn from feedback how to move their hands to create customized musical pieces. Also, Fig 
 6 \& 7 depict the different gestures in the Gesture selection mode of the system.
 
 \begin{figure}[h!]
@@ -282,7 +282,7 @@ users can learn from feedback how to move their hands to create customized music
   \centering
   \includegraphics[width=0.4\columnwidth]{ges1.png}
   \includegraphics[width=0.4\columnwidth]{ges2.png}
-  \caption{Gestures 1 - 2}
+  \caption{Gesture 1 \& Gesture 2}
   \label{Overall1}
 \end{figure}
 
@@ -290,7 +290,7 @@ users can learn from feedback how to move their hands to create customized music
   \centering
   \includegraphics[width=0.4\columnwidth]{ges3.png}
   \includegraphics[width=0.4\columnwidth]{ges4.png}
-  \caption{Gestures 3 - 4}
+  \caption{Gesture 3 \& Gesture 4}
   \label{Overall1}
 \end{figure}
 

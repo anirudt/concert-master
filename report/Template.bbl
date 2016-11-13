@@ -1,9 +1,9 @@
 \begin{thebibliography}{1}
 
 \bibitem{pixelskin}
-Vladimir Vezhnevets,
-\newblock ``{A Survey on Pixel-Based Skin Color Detection Techniques},''
-\newblock .
+Vladimir Vezhnevets, Vassili Sazonov, and Alla Andreeva,
+\newblock ``A survey on pixel-based skin color detection techniques,''
+\newblock in {\em Proc. Graphicon}. Moscow, Russia, 2003, vol.~3, pp. 85--92.
 
 \bibitem{Chai1999}
 Douglas Chai and King~N. Ngan,
