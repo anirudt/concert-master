@@ -1,10 +1,21 @@
 \begin{thebibliography}{1}
 
+\bibitem{pixelskin}
+Vladimir Vezhnevets,
+\newblock ``{A Survey on Pixel-Based Skin Color Detection Techniques},''
+\newblock .
+
 \bibitem{Chai1999}
 Douglas Chai and King~N. Ngan,
 \newblock ``{Face segmentation using skin-color map in videophone
   applications},''
 \newblock {\em IEEE Transactions on Circuits and Systems for Video Technology},
   vol. 9, no. 4, pp. 551--564, 1999.
+
+\bibitem{zatlab}
+Andr{\'{e}} Baltazar, Lg~Martins, and Js~Cardoso,
+\newblock ``{ZATLAB: A Gesture Analysis System to Music Interaction},''
+\newblock {\em 6th International Conference on Digital Arts (ARTECH 2012)},
+  2012.
 
 \end{thebibliography}

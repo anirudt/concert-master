@@ -1,33 +1,33 @@
+Synthesis of Music for the Lazy by Classification of Hand Gestures
+
 ## What?
 Concert-Master is a gesture based music synthesis tool.
 It currently offers two kinds of features:
-* Continuous mode: Create a piece of music purely from first principles (read notes) and accurate control of your hand.
+* Free hand mode: Create a piece of music purely from first principles (read notes) and accurate control of your hand.
 * Gesture mode: Signify the serial number of the piece with your fingers, and the program plays the selected piece!
 
 ## Dependencies
 - ```opencv```
 - ```pyknon```
+- ```pygame```
 
 ## Build Instructions
 Fire up a terminal and run the above command.
 ```
-$ python concert.py
+$ python concert.py -h
 ```
 
-## TODO:
-- Archive the scatterplot and the MIDI file later.
-- Try to do a Histogram Backprojection
-  - Detected that S and V channels do have a specific trend.
-  - Try to get a trend in H channels
-  - Collect pertinent data wrt this.
-  - Tried, but the fingertip detection is not very robust.
-- Try the YCbCr space using the paper written by Ngan and Chai.
+Alternatively, to run it in single hand-Free hand mode,
+```
+$ python concert.py -n1 --fre
 
-## Preprocessing involved
-The following preprocessing is conducted:
-- Convert the color space to HSV from RGB.
-- Apply a range thresholding
-- Apply Dilation / Erosion.
-- Apply Medianblur to remove small outlier white points.
-- Apply contouring to get the contours with the largest areas.
-- Done with music synthesis for a double hand system.
+```
+The above mode can be run in a double hand mode as well.
+
+Alternatively, to run it in single hand-Gesture mode.
+```
+$ python concert.py -n1 --ges
+```
+
+For more details, have a look at the Template.pdf file inside
+the report/ directory, or feel free to contact me.

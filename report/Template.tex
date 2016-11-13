@@ -3,7 +3,7 @@
 %          IEEEbib.bst - IEEE bibliography style file.
 % --------------------------------------------------------------------------
 \documentclass[letterpaper, 10 pt, twoside, conference]{ieeeconf}
-\usepackage{spconf,amsmath,graphicx,mathtools,graphicx}
+\usepackage{spconf,amsmath,graphicx,mathtools,graphicx,gensymb}
 \graphicspath{{images/}}
 
 % Example definitions.
@@ -13,7 +13,7 @@
 
 % Title.
 % ------
-\title{Concert-Master: Synthesis of Music for the Blind using Classification of Hand Gestures}
+\title{Concert-Master: Synthesis of Music for the Lazy using Classification of Hand Gestures}
 %
 % Single address.
 % ---------------
@@ -68,7 +68,7 @@ Gesture, Hand Detection, Music, Y-Cb-Cr
 \label{sec:intro}
 
 The gesture is an important part of human communication,
-and it is used often - even unconsciously - as a means of expression and interaction with the world, having a strong impact on how humans perceive and interpret themselves [1]. There is an important distinction between gesture and movement [2]. Gesture presupposes an intention, a meaning and the movement is the physic action itself (e.g. a set of arm movements waving composes the gesture of saying goodbye). Nowadays, different methods can be used to capture human
+and it is used often - even unconsciously - as a means of expression and interaction with the world, having a strong impact on how humans perceive and interpret themselves. There is an important distinction between gesture and movement. Gesture presupposes an intention, a meaning and the movement is the physic action itself (e.g. a set of arm movements waving composes the gesture of saying goodbye). Nowadays, different methods can be used to capture human
 movements using, for instance, video cameras, body wearable sensors or external sensors, such as infra-red Motion Capture (MOCAP) systems. All these processes allow capturing and gathering signal data, from where relevant gesture features can be extracted for further analysis and processing (e.g. estimating amplitude, periodicity, rhythm, diversity, etc., of a gesture or movement). Such features can then be used as inputs for real-time algorithmic music composition systems, paving the way for novel expressive and artistic works, where humans and machines interact in a more semantically and artistically meaningful dialog. The motivation behind this particular system, is the possibility of analyzing human gesture at a higher level. Hence, the musical output can present more abstract and complex relations with the human gestures, rather than the direct mapping of human movements.
 
 \begin{figure}[h]
@@ -86,7 +86,6 @@ upon the operating mode. In this paper, we employ 3 techniques to detect the han
 trigger a corresponding musical response to the gesture made. The novelty in this system is regarding the
 simplicity of the hardware and the granularity of selection of music pieces.
 
-% TODO
 % Put a picture here.
 The paper is organised as follows. Section I presents a brief introduction to the research area that the system targets and
 the associated proposed system. Section II presents the prior art in the area and the
@@ -100,7 +99,8 @@ work proposed.
 
 The basis of the work is based on hand detection. Hand detection in the absence of
 other body parts resolves to skin detection; and hence the primal investigation in this
-direction occurs in image processing methods for skin detection. Primitive methods
+direction occurs in image processing methods for skin detection. \cite{pixelskin} talks
+about pixel based skin color detection techniques. Primitive methods
 suggest the use of HSV thresholding; with the HSV space calculated as follows:
 
 \begin{equation}
@@ -176,7 +176,7 @@ The above $Y,C_B$ and $C_R$ values are measured in the 8 bit format. Thus, \cite
 in this space yielded even better results, as it turned out to be illumination invariant to a good extent,
 discounting any drastic changes (either very dark or very light). However, due to thresholding with Chroma
 components, the detection could be marred by having objects of similar color, and hence this method fails
-in such scenarios.
+in such scenarios. 
 
 The proposed system has options for all the three methods listed above, and hence can be switched based
 on the application/environmental conditions. The software section will discuss more about switching between these modes.
@@ -206,6 +206,7 @@ options and arguments. The list of options include:
   \item \texttt{--ges}: Used for a 4-class gesture for music selection, disjoint with the
     above 2 methods.
 \end{itemize}
+The software is open sourced at this link \footnote{https://github.com/anirudt/concert-master}.
 
 \subsection{Feature Processing}
   As mentioned earlier, the system accepts input from a computer webcamera. The following points illustrate
@@ -230,10 +231,11 @@ options and arguments. The list of options include:
       
       However, the convexity defects contain extraneous points than the desired junctions, and hence need filtering,
       based on the distance from the convex hull and the defect, and the angle subtended between two consecutive
-      hull vertices at the defect.
-      % TODO: Add equation here.
+      hull vertices at the defect. The distance should be greater than an adaptively learnt threshold, and the angle
+      should be greater than 80\degree.
 
-      After having detected the number of junctions in the gesture implied, the gesture is selected and a corresponding
+      After having detected the number of junctions in the gesture implied, the gesture is selected over a majority
+      voting function over 10 epochs, and a corresponding
       song is played. Currently, only 4 gestures are made, but due to its geometric rule based nature, it is natural that
       it can be extended to custom gestures as well.
 
@@ -260,145 +262,46 @@ options and arguments. The list of options include:
     \item \textit{Gesture selection}: The music module receives the gesture ID, and the \texttt{pygame mixer}
       plays the corresponding song from the playlist.
     \end{itemize}
-\section{MAJOR HEADINGS}
-\label{sec:majhead}
+\section{Results}
 
-Major headings, for example, "1. Introduction", should appear in all capital
-letters, bold face if possible, centered in the column, with one blank line
-before, and one blank line after. Use a period (".") after the heading number,
-not a colon.
+The free mode of the system generates raw unprocessed notes. This can be viewed by the user as in Figure 5,
+where the scatterplot of the user's movement can be tracked; the darker red dots are plotted when the
+user initially starts, while the lighter ones depict the movement of the hand's centroid as it moves
+through time. This dynamic plot is generated to guide the users through the music generation process;
+users can learn from feedback how to move their hands to create customized musical pieces. Also, figures
+6 \& 7 depict the different gestures in the Gesture selection mode of the system.
 
-\section{PRINTING YOUR PAPER}
-\label{sec:print}
-
-Print your properly formatted text on high-quality, 8.5 x 11-inch white printer
-paper. A4 paper is also acceptable, but please leave the extra 0.5 inch (12 mm)
-empty at the BOTTOM of the page and follow the top and left margins as
-specified.  If the last page of your paper is only partially filled, arrange
-the columns so that they are evenly balanced if possible, rather than having
-one long column.
-
-In LaTeX, to start a new column (but not a new page) and help balance the
-last-page column lengths, you can use the command ``$\backslash$pagebreak'' as
-demonstrated on this page (see the LaTeX source below).
-
-\section{PAGE NUMBERING}
-\label{sec:page}
-
-Please do {\bf not} paginate your paper.  Page numbers, session numbers, and
-conference identification will be inserted when the paper is included in the
-proceedings.
-
-\section{ILLUSTRATIONS, GRAPHS, AND PHOTOGRAPHS}
-\label{sec:illust}
-
-Illustrations must appear within the designated margins.  They may span the two
-columns.  If possible, position illustrations at the top of columns, rather
-than in the middle or at the bottom.  Caption and number every illustration.
-All halftone illustrations must be clear black and white prints.  Colors may be
-used, but they should be selected so as to be readable when printed on a
-black-only printer.
-
-Since there are many ways, often incompatible, of including images (e.g., with
-experimental results) in a LaTeX document, below is an example of how to do
-this \cite{Chai1999}.
-
-\section{FOOTNOTES}
-\label{sec:foot}
-
-Use footnotes sparingly (or not at all!) and place them at the bottom of the
-column on the page on which they are referenced. Use Times 9-point type,
-single-spaced. To help your readers, avoid using footnotes altogether and
-include necessary peripheral observations in the text (within parentheses, if
-you prefer, as in this sentence).
-
-% Below is an example of how to insert images. Delete the ``\vspace'' line,
-% uncomment the preceding line ``\centerline...'' and replace ``imageX.ps''
-% with a suitable PostScript file name.
-% -------------------------------------------------------------------------
-\begin{figure}[htb]
-
-\begin{minipage}[b]{1.0\linewidth}
+\begin{figure}[h!]
   \centering
-  %\centerline{\includegraphics[width=8.5cm]{image1}}
-%  \vspace{2.0cm}
-  \centerline{(a) Result 1}\medskip
-\end{minipage}
-%
-\begin{minipage}[b]{.48\linewidth}
-  \centering
-  %\centerline{\includegraphics[width=4.0cm]{image3}}
-%  \vspace{1.5cm}
-  \centerline{(b) Results 3}\medskip
-\end{minipage}
-\hfill
-\begin{minipage}[b]{0.48\linewidth}
-  \centering
-  %\centerline{\includegraphics[width=4.0cm]{image4}}
-%  \vspace{1.5cm}
-  \centerline{(c) Result 4}\medskip
-\end{minipage}
-%
-\caption{Example of placing a figure with experimental results.}
-\label{fig:res}
-%
+  \includegraphics[width=0.8\columnwidth]{scatter.png}
+  \caption{Scatter pattern of the hand centroid over the musical grid}
+  \label{scatter}
 \end{figure}
 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.4\columnwidth]{ges1.png}
+  \includegraphics[width=0.4\columnwidth]{ges2.png}
+  \caption{Gestures 1 - 2}
+  \label{Overall1}
+\end{figure}
 
-% To start a new column (but not a new page) and help balance the last-page
-% column length use \vfill\pagebreak.
-% -------------------------------------------------------------------------
-%\vfill
-%\pagebreak
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.4\columnwidth]{ges3.png}
+  \includegraphics[width=0.4\columnwidth]{ges4.png}
+  \caption{Gestures 3 - 4}
+  \label{Overall1}
+\end{figure}
 
-\section{COPYRIGHT FORMS}
-\label{sec:copyright}
+\section{Conclusion}
+Though there have been systems like \cite{zatlab} which do offer musical generation,
+such systems may have heavy hardware requirements and computational requirements
+for running machine learning modules. Such requirements may not be available all the time,
+and hence simplistic models like the proposed system could be used for small scale productive
+musical generation. As discussed earlier, the proposed system's algorithms could be
+easily extended to include more number of gestures using rule based learning.
 
-You must submit your fully completed, signed IEEE electronic copyright release
-form when you submit your paper. We {\bf must} have this form before your paper
-can be published in the proceedings.
-
-\section{RELATION TO PRIOR WORK}
-\label{sec:prior}
-
-The text of the paper should contain discussions on how the paper's
-contributions are related to prior work in the field. It is important
-to put new work in  context, to give credit to foundational work, and
-to provide details associated with the previous work that have appeared
-in the literature. This discussion may be a separate, numbered Section
-or it may appear elsewhere in the body of the manuscript, but it must
-be present.
-
-You should differentiate what is new and how your work expands on
-or takes a different path from the prior studies. An example might
-read something to the effect: "The work presented here has focused
-on the formulation of the ABC algorithm, which takes advantage of
-non-uniform time-frequency domain analysis of data. The work by
-Smith and Cohen  considers only fixed time-domain analysis and
-the work by Jones et al  takes a different approach based on
-fixed frequency partitioning. While the present study is related
-to recent approaches in time-frequency analysis [3-5], it capitalizes
-on a new feature space, which was not considered in these earlier
-studies."
-
-\vfill\pagebreak
-
-\section{REFERENCES}
-\label{sec:refs}
-
-List and number all bibliographical references at the end of the
-paper. The references can be numbered in alphabetic order or in
-order of appearance in the document. When referring to them in
-the text, type the corresponding reference number in square
-brackets as shown at the end of this sentence \cite{Chai1999}. An
-additional final page (the fifth page, in most cases) is
-allowed, but must contain only references to the prior
-literature.
-
-% References should be produced using the bibtex program from suitable
-% BiBTeX files (here: strings, refs, manuals). The IEEEbib.bst bibliography
-% style file from IEEE produces unsorted bibliography list.
-% -------------------------------------------------------------------------
 \bibliographystyle{IEEEbib}
 \bibliography{Template}
 
