@@ -29,4 +29,4 @@ Alternatively, to run it in single hand-Gesture mode.
 $ python concert.py -n1 --ges
 ```
 
-For more details, have a look at the report [here](report/Template.tex), or feel free to contact me.
+For more details, have a look at the report [here](report/Template.pdf), or feel free to contact me.
