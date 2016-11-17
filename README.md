@@ -7,7 +7,7 @@ It currently offers two kinds of features:
 * Gesture mode: Signify the serial number of the piece with your fingers, and the program plays the selected piece.
 
 ## Dependencies
-- ```opencv```
+- ```opencv 2.4.8```
 - ```pyknon```
 - ```pygame```
 
