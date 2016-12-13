@@ -117,7 +117,7 @@ def skin_detect_hsv(frame, opt, hsvt=None):
     contours = None
 
     cv2.waitKey(50)
-    contours, hierarchy = cv2.findContours(hsv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    _, contours, hierarchy = cv2.findContours(hsv, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     return bhsv, contours, hierarchy
 
 def skin_detect_ycbcr(frame):
@@ -132,7 +132,7 @@ def skin_detect_ycbcr(frame):
     # Find region with skin tone in YCrCb image
     skinRegion = cv2.inRange(imageYCrCb, min_YCrCb, max_YCrCb) 
     # Do contour detection on skin region
-    contours, hierarchy = cv2.findContours(skinRegion, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    _, contours, hierarchy = cv2.findContours(skinRegion, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     return imageYCrCb, contours, hierarchy
 
